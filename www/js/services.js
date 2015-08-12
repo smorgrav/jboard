@@ -67,7 +67,8 @@ angular.module('johans.services', ['ionic'])
 
 .factory('BoardService', function(){
     var service = {
-      getBoards: getBoards
+      getBoards: getBoards,
+      nofBoards: nofBoards
     };
 
 	function getBoards() {
@@ -75,12 +76,47 @@ angular.module('johans.services', ['ionic'])
 	}
 
 	function nofBoards() {
-		return boards.lenght;
+		return boards.length;
 	}
 
 	boards = [{
+		pos: 0,
 		cols: 3,
 		rows: 3,
+        title: 'Familie',
+		tiles: [{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    }]
+	}, {
+		pos: 1,
+		rows: 3,
+		cols: 3,
+        title: 'Mat',
 		tiles : [{
 		        image: 'img/farm.png',
 		        audio: ''
@@ -110,8 +146,76 @@ angular.module('johans.services', ['ionic'])
 		        audio: ''
 		    }]
 	}, {
+		pos: 2,
 		rows: 3,
 		cols: 3,
+        title: 'Traktor',
+		tiles : [{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    }]
+	}, {
+		pos: 3,
+		rows: 3,
+		cols: 3,
+        title: 'Leke',
+		tiles : [{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    },{
+		        image: 'img/farm.png',
+		        audio: ''
+		    }]
+	}, {
+		pos: 4,
+		rows: 3,
+		cols: 3,
+        title: 'Dagsplan',
 		tiles : [{
 		        image: 'img/farm.png',
 		        audio: ''

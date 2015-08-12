@@ -1,0 +1,16 @@
+<ion-view view-title="Johans First">
+ <ion-nav-buttons side="right">
+ <ion-toggle ng-model="padlock" toggle-class="toggle-calm">Parent</ion-toggle>
+    </ion-nav-buttons>
+            <ion-content>
+                <div ng-repeat="r in repeat(rows) track by $index">
+                    <div class="row">
+                        <div ng-repeat="c in repeat(cols) track by $index">
+                            <div class="col card">
+                                <img on-tap="onTap(r,c)" ng-src="{{ getItem(r,c).image}}" width="100%"/>
+                             </div> 
+                         </div>
+                    </div>
+                </div>
+			</ion-content>
+		</ion-view>

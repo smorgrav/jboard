@@ -2,7 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
+	<preference name="EnableViewportScale" value="true"/>
     <title></title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
@@ -16,7 +17,7 @@
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
-    <script src="js/ng-cordova.min.js">
+    <script src="js/ng-cordova.min.js"></script>
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
@@ -25,29 +26,8 @@
 	<script src="js/services.js"></script>
   </head>
   <body ng-controller="ImageCtrl" ng-app="jboard">
-    <ion-side-menus>
-        <ion-side-menu-content>
-            <ion-header-bar class="bar-dark">
-                <h1 class="title">Family</h1>
-            </ion-header-bar>
-            <ion-content>
-                <div ng-repeat="r in repeat(rows) track by $index">
-                    <div class="row">
-                        <div ng-repeat="c in repeat(cols) track by $index">
-                            <div class="col card item item-image">
-                                <img on-tap="onTap(r,c)" ng-src="{{ getItem(r,c).image}}"/>
-                             </div>
-                         </div>
-                    </div>
-                </div>
-            </ion-content>
-        </ion-side-menu-content>
-        <ion-side-menu side="left">
-            <ion-header-bar class="bar-dark">
-                <h1 class="title">Projects</h1>
-            </ion-header-bar></h>
-        </ion-side-menu>
-    </ion-side-menus>
+	  <ion-nav-bar></ion-nav-bar>
+      <ion-nav-view></ion-nav-view>
   </body>
 
 </html>

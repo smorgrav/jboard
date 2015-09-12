@@ -1,9 +1,6 @@
-// Ionic Starter App
+var fb = new Firebase("https://popping-torch-6409.firebaseio.com/");
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-angular.module('jboard', ['johans.services', 'ionic', 'ngCordova'])
+angular.module('jboard', ['johans.services', 'johans.controllers', 'ionic', 'ngCordova', 'firebase'])
 
 .directive('tabsSwipable', ['$ionicGesture', function($ionicGesture){
 	//
@@ -50,155 +47,88 @@ angular.module('jboard', ['johans.services', 'ionic', 'ngCordova'])
   });
 })
 
-
-.controller('ImageCtrl', function($scope, $cordovaMedia, $ionicLoading, $ionicActionSheet, MediaService, BoardService, CameraService) {
-	
-	$scope.tileActionSheet = function() {
-	    $ionicActionSheet.show({
-	     buttons: [
-	       { text: 'New Picture' },
-		   { text: 'Voiceover' }
-	     ],
-	     destructiveText: 'Delete',
-	     titleText: 'Edit Tile',
-	     cancelText: 'Cancel',
-	     buttonClicked: function(index) {
-			 switch(index) {
-			     case 0:
-			         $scope.getPhoto();
-			         break;
-			     case 1:
-			         break;
-			     default:
-			         return;
-			 }
-	     }
-	   });
-	  };
-	  
-	  $scope.getPhoto = function() {
-	      console.log('Getting camera');
-	      Camera.getPicture({
-	        quality: 75,
-	        targetWidth: 320,
-	        targetHeight: 320,
-	        saveToPhotoAlbum: false
-	      }).then(function(imageURI) {
-	        console.log(imageURI);
-	        $scope.lastPhoto = imageURI;
-	      }, function(err) {
-	        console.err(err);
-	      })};
-		    
-	  
-    $scope.onTap = function(r,c) {
-        console.log("Tapped: " + r + ":" + c);
-		$scope.tileActionSheet();
-		CameraService.getPicture().then(function(imageURI) {
-		      console.log(imageURI);
-		    }, function(err) {
-		      console.err(err);
-		    });
-      //  $scope.play("audio/test.wav")
-    };
-    
-	$scope.repeat = function(i) {
-        return i?$scope.repeat(i-1).concat(i):[]
-    }
-
-    $scope.play = function(src) {
-        MediaService.loadMedia(src).then(function(media){
-            media.play();
-        });
-    }
-	
-	$scope.getBoard = function(pos) {
-		BoardService.getBoards()[pos];		
-	}
-	
-	$scope.boards = BoardService.getBoards();
-	$scope.nofBoards =  BoardService.nofBoards();
-    $scope.tiles = BoardService.getBoards()[0].tiles;
-    $scope.rows = 3;
-    $scope.cols = 3;
-    
-    $scope.getItem = function(row,col) {
-        return $scope.tiles[0];
-    }
-	
-    $scope.parentMode = false;
-})
-
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
   $stateProvider
 
   // setup an abstract state for the tabs directive
   .state('boards', {
     url: '/boards',
     abstract: true,
-    templateUrl: 'templates/boards.html'
+    templateUrl: 'templates/tabs.html'
   })
-
-  // Each tab has its own nav history stack:
 
   .state('boards.grid0', {
     url: '/grid/0',
+	data: {
+	  tab: 0
+	},
     views: {
       'boards-grid-0': {
-        templateUrl: 'templates/boards-grid.html',
-		controller: 'ImageCtrl'
+        templateUrl: 'templates/tabs-tiles.html',
+		controller: 'TileController',
       }
     }
   })
   
   .state('boards.grid1', {
     url: '/grid/1',
+	data: {
+		tab: 1
+	},
     views: {
       'boards-grid-1': {
-        templateUrl: 'templates/boards-grid.html',
-        controller: 'ImageCtrl'
+        templateUrl: 'templates/tabs-tiles.html',
+        controller: 'TileController',
       }
     }
   })
   
   .state('boards.grid2', {
     url: '/grid/2',
+	data: {
+		tab: 2
+	},
     views: {
       'boards-grid-2': {
-        templateUrl: 'templates/boards-grid.html',
-        controller: 'ImageCtrl'
+        templateUrl: 'templates/tabs-tiles.html',
+        controller: 'TileController',		  
       }
     }
   })
   
   .state('boards.grid3', {
     url: '/grid/3',
+	data: {
+	   tab: 3
+	},
     views: {
       'boards-grid-3': {
-        templateUrl: 'templates/boards-grid.html',
-        controller: 'ImageCtrl'
+        templateUrl: 'templates/tabs-tiles.html',
+        controller: 'TileController',		  
       }
     }
   })
   
   .state('boards.grid4', {
     url: '/grid/4',
+	data: {
+	  tab: 4
+	}, 
     views: {
       'boards-grid-4': {
-        templateUrl: 'templates/boards-grid.html',
-		controller: 'ImageCtrl'
+        templateUrl: 'templates/tabs-tiles.html',
+		controller: 'TileController',		  
       }
     }
   })
   
-  
-
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/boards/grid/0');
-
+  .state("login", {
+        url: "/login",
+        templateUrl: "templates/login.html",
+        controller: "LoginController",
+        cache: false
+  })
+    
+  $urlRouterProvider.otherwise('/login');
 });

@@ -1,7 +1,6 @@
-angular.module('johans.services', ['ionic'])
+angular.module('johans.services', ['ionic', 'ngCordova'])
 
-// for media plugin : http://plugins.cordova.io/#/package/org.apache.cordova.media
-.factory('MediaService', function($q, $ionicPlatform, $window){
+.factory('MediaService', function($q, $ionicPlatform, $window, $cordovaMedia){
   var service = {
     loadMedia: loadMedia,
     getStatusMessage: getStatusMessage,
@@ -69,24 +68,31 @@ angular.module('johans.services', ['ionic'])
 
   return {
     getPicture: function(options) {
-      var q = $q.defer();
+		var q = $q.defer();
 
-      navigator.camera.getPicture(function(result) {
-        // Do any magic you need
-        q.resolve(result);
-      }, function(err) {
-        q.reject(err);
-      }, options);
+		 navigator.camera.getPicture(function(result) {
+		        $scope.imgURI = "data:image/jpeg;base64," + imageData;
+		        q.resolve(result);
+		      }, function(err) {
+		        q.reject(err);
+		      }, options);
 
-      return q.promise;
+		      return q.promise;
+ 
+        $cordovaCamera.getPicture(options).then(function(imageData) {
+            
+        }, function(err) {
+            // An error occured. Show a message to the user
+        });
     }
   }
 }])
 
-.factory('BoardService', function(){
+.factory('TileService', function(){
     var service = {
       getBoards: getBoards,
-      nofBoards: nofBoards
+      nofBoards: nofBoards,
+	  newTile: newTile
     };
 
 	function getBoards() {
@@ -97,10 +103,18 @@ angular.module('johans.services', ['ionic'])
 		return boards.length;
 	}
 
+    function newTile() {
+		return {
+			image: nil,
+			voiceover: nil,
+			url: nil,
+			caption: nil
+		}
+    }
+
 	boards = [{
 		pos: 0,
 		cols: 3,
-		rows: 3,
         title: 'Familie',
 		tiles: [{
 		        image: 'img/farm.png',
@@ -132,7 +146,6 @@ angular.module('johans.services', ['ionic'])
 		    }]
 	}, {
 		pos: 1,
-		rows: 3,
 		cols: 3,
         title: 'Mat',
 		tiles : [{
@@ -165,7 +178,6 @@ angular.module('johans.services', ['ionic'])
 		    }]
 	}, {
 		pos: 2,
-		rows: 3,
 		cols: 3,
         title: 'Traktor',
 		tiles : [{
@@ -198,7 +210,6 @@ angular.module('johans.services', ['ionic'])
 		    }]
 	}, {
 		pos: 3,
-		rows: 3,
 		cols: 3,
         title: 'Leke',
 		tiles : [{
@@ -231,7 +242,6 @@ angular.module('johans.services', ['ionic'])
 		    }]
 	}, {
 		pos: 4,
-		rows: 3,
 		cols: 3,
         title: 'Dagsplan',
 		tiles : [{

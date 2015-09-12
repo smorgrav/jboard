@@ -1,79 +1,111 @@
-angular.module('johans.controllers', ['ionic', 'ngCordova'])
+angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
 
-.controller('ImageCtrl', function($scope, $cordovaMedia, $ionicLoading, $ionicActionSheet, MediaService, BoardService, CameraService) {
-	
+.controller('TileController', function($scope, $state, $cordovaMedia, $ionicLoading, 
+	$ionicActionSheet, $ionicHistory, $firebaseArray, MediaService, TileService, CameraService) {
+
+	console.log("/tabs/" + $state.current.data.tab)
+
+	$ionicHistory.clearHistory();
+	$scope.tiles = [];
+	$scope.editMode = false;
+
 	$scope.tileActionSheet = function() {
-	    $ionicActionSheet.show({
-	     buttons: [
-	       { text: 'New Picture' },
-		   { text: 'Voiceover' }
-	     ],
-	     destructiveText: 'Delete',
-	     titleText: 'Edit Tile',
-	     cancelText: 'Cancel',
-	     buttonClicked: function(index) {
-			 switch(index) {
-			     case 0:
-			         $scope.getPhoto();
-			         break;
-			     case 1:
-			         break;
-			     default:
-			         return;
-			 }
-	     }
-	   });
-	  };
-	  
-	  $scope.getPhoto = function() {
-	      console.log('Getting camera');
-	      Camera.getPicture({
-	        quality: 75,
-	        targetWidth: 320,
-	        targetHeight: 320,
-	        saveToPhotoAlbum: false
-	      }).then(function(imageURI) {
-	        console.log(imageURI);
-	        $scope.lastPhoto = imageURI;
-	      }, function(err) {
-	        console.err(err);
-	      })};
-		    
-	  
-    $scope.onTap = function(r,c) {
-        console.log("Tapped: " + r + ":" + c);
-		$scope.tileActionSheet();
-		CameraService.getPicture().then(function(imageURI) {
-		      console.log(imageURI);
-		    }, function(err) {
-		      console.err(err);
-		    });
-      //  $scope.play("audio/test.wav")
-    };
-    
-	$scope.repeat = function(i) {
-        return i?$scope.repeat(i-1).concat(i):[]
-    }
+		$ionicActionSheet.show({
+			buttons: [{
+				text: 'New Photo'
+			}, {
+				text: 'Voiceover'
+			}],
+			destructiveText: 'Delete',
+			titleText: 'Edit Tile',
+			cancelText: 'Cancel',
+			buttonClicked: function(index) {
+				switch (index) {
+					case 0:
+						$scope.getPhoto();
+						break;
+					case 1:
+						break;
+					default:
+						return;
+				}
+			}
+		});
+	};
 
-    $scope.play = function(src) {
-        MediaService.loadMedia(src).then(function(media){
-            media.play();
-        });
-    }
-	
-	$scope.getBoard = function(pos) {
-		BoardService.getBoards()[pos];		
+	$scope.newTile = function(index) {
+		CameraService.getPicture().then(function(imageData) {
+			tile = TileService.newTile();
+			tile.imageDate = imageData;
+			$scope.tiles.$add(tile).then(function() {
+				alert("New tile has been uploaded");
+			});
+		}, function(error) {
+			console.error(error);
+		});
 	}
-	
-	$scope.boards = BoardService.getBoards();
-	$scope.nofBoards =  BoardService.nofBoards();
-    $scope.tiles = BoardService.getBoards()[0].tiles;
-    $scope.rows = 3;
-    $scope.cols = 3;
-    
-    $scope.getItem = function(row,col) {
-        return $scope.tiles[0];
-    }
-	
-    $scope.parentMode = false;
+
+	$scope.onTap = function(index, tab) {
+		console.log("Tapped in tab: " + tab + " index: " + index);
+		if ($scope.editMode) {
+			$scope.tileActionSheet();
+		} else {
+			$scope.play(index)
+		}
+	};
+
+	$scope.play = function(index) {
+		var tile = $scope.tiles[index]
+		if (tile.voiceover == nil) {
+			console.log("No voiceover available for " + index);
+		} else {
+			MediaService.loadMedia(tile.voiceover).then(function(media) {
+				media.play();
+			});
+		}
+	}
+
+	var fbAuth = fb.getAuth();
+	if (fbAuth) {
+		var userReference = fb.child("users/" + fbAuth.uid);
+		$scope.tiles = $firebaseArray(userReference.child("/tabs/" + $state.current.data.tab));
+	} else {
+		$state.go("login");
+	}
 })
+
+.controller("LoginController", function($scope, $state, $firebaseAuth) {
+
+	var fbAuth = $firebaseAuth(fb);
+
+	$scope.login = function(username, password) {
+		fbAuth.$authWithPassword({
+			email: username,
+			password: password
+		}).then(function(authData) {
+			console.log("Authenticated!");
+			$state.go("boards.grid0");
+		}).
+		catch (function(error) {
+			console.error("ERROR: " + error);
+		});
+	}
+
+	$scope.register = function(username, password) {
+		fbAuth.$createUser({
+			email: username,
+			password: password
+		}).then(function(userData) {
+			return fbAuth.$authWithPassword({
+				email: username,
+				password: password
+			});
+		}).then(function(authData) {
+			console.log("Authenticated!");
+			$state.go("boards.grid0");
+		}).
+		catch (function(error) {
+			console.error("ERROR: " + error);
+		});
+	}
+});

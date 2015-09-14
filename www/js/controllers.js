@@ -1,4 +1,4 @@
-angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
+angular.module('johans.controllers', ['ngCordova', 'firebase'])
 
 .controller('TileController', function($scope, $state, $cordovaMedia, $ionicLoading, 
 	$ionicActionSheet, $ionicHistory, $firebaseArray, MediaService, TileService, CameraService) {
@@ -6,23 +6,22 @@ angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
 	console.log("/tabs/" + $state.current.data.tab)
 
 	$ionicHistory.clearHistory();
-	$scope.tiles = [];
-	$scope.editMode = false;
+	$scope.mode = { editMode: false };
 
-	$scope.tileActionSheet = function() {
+	$scope.tileActionSheet = function(index) {
 		$ionicActionSheet.show({
 			buttons: [{
 				text: 'New Photo'
 			}, {
-				text: 'Voiceover'
+				text: 'New Voiceover'
 			}],
 			destructiveText: 'Delete',
 			titleText: 'Edit Tile',
 			cancelText: 'Cancel',
-			buttonClicked: function(index) {
-				switch (index) {
+			buttonClicked: function(ix) {
+				switch (ix) {
 					case 0:
-						$scope.getPhoto();
+						$scope.changePhoto(index);
 						break;
 					case 1:
 						break;
@@ -33,22 +32,49 @@ angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
 		});
 	};
 
+	$scope.changePhoto = function(index) {
+		CameraService.getPicture().then(function(imageData) {
+			$scope.tiles[index].imageData = imageData;
+		})
+		$scope.tiles.$save(index);
+	}
+	
+	$scope.changeVoice = function(index) {
+		var src = "/src/voice_tab" + tab + "_index" + index + ".mp3";
+		var media = $cordovaMedia.newMedia(src,function(){},function(err) {});
+	    media.startRecord();
+
+        // Stop recording after 10 sec
+        var recTime = 0;
+        var recInterval = setInterval(function() {
+            recTime = recTime + 1;
+            if (recTime >= 3) {
+                clearInterval(recInterval);
+                media.stopRecord();
+				media.play();
+            }
+        }, 1000);
+		
+		//$scope.tiles.$save(index);
+	}
+
 	$scope.newTile = function(index) {
 		CameraService.getPicture().then(function(imageData) {
 			tile = TileService.newTile();
-			tile.imageDate = imageData;
+			tile.imageData = imageData;
 			$scope.tiles.$add(tile).then(function() {
 				alert("New tile has been uploaded");
 			});
+			console.log("Lenght now:" + $scope.tiles.length)
 		}, function(error) {
 			console.error(error);
 		});
 	}
 
-	$scope.onTap = function(index, tab) {
-		console.log("Tapped in tab: " + tab + " index: " + index);
-		if ($scope.editMode) {
-			$scope.tileActionSheet();
+	$scope.onTap = function(index) {
+		console.log("Tapped index " + index + " Edit mode: " + $scope.editMode);
+		if ($scope.mode.editMode) {
+			$scope.tileActionSheet(index);
 		} else {
 			$scope.play(index)
 		}
@@ -56,10 +82,11 @@ angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
 
 	$scope.play = function(index) {
 		var tile = $scope.tiles[index]
-		if (tile.voiceover == nil) {
+		if (tile.voiceover == null) {
 			console.log("No voiceover available for " + index);
 		} else {
-			MediaService.loadMedia(tile.voiceover).then(function(media) {
+			
+			MediaService.loadMedia().then(function(media) {
 				media.play();
 			});
 		}
@@ -68,7 +95,7 @@ angular.module('johans.controllers', ['johans.filters', 'ngCordova'])
 	var fbAuth = fb.getAuth();
 	if (fbAuth) {
 		var userReference = fb.child("users/" + fbAuth.uid);
-		$scope.tiles = $firebaseArray(userReference.child("/tabs/" + $state.current.data.tab));
+		$scope.tiles = $firebaseArray(userReference.child("/tabs/" + $state.current.data.tab + "/"));
 	} else {
 		$state.go("login");
 	}

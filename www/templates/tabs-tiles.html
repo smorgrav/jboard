@@ -1,17 +1,19 @@
 <ion-view view-title="Johans First">
-<ion-nav-buttons side="right">
-  <button class="button button-icon icon ion-camera" ng-if="editMode" ng-click="newTile()"></button>
-  <ion-toggle ng-model="editMode" toggle-class="toggle-calm">Edit</ion-toggle>
-</ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-icon icon ion-camera" ng-if="editMode" ng-click="newTile()"></button>
+    <ion-toggle ng-model="mode.editMode" toggle-class="toggle-calm">Edit</ion-toggle>
+  </ion-nav-buttons>
+   <ion-content>
          <div class="row" ng-repeat="tile in tiles" ng-if="$index % 4 === 0">
-            <div class="col col-33" ng-if="$index < tile.length">
-                <img on-tap="onTap($index,custom.data.tab)" ng-src="data:image/jpeg;base64,{{images[$index].image}}" width="100%" />
+            <div class="col col-33" ng-if="$index < tiles.length">
+                <img on-tap="onTap($index)" ng-src="data:image/jpeg;base64,{{tiles[$index].imageData}}" width="100%" />
             </div>
-            <div class="col col-33" ng-if="$index + 1 < tile.length">
-                <img on-tap="onTap($index,custom.data.tab)" ng-src="data:image/jpeg;base64,{{images[$index + 1].image}}" width="100%" />
+            <div class="col col-33" ng-if="$index + 1 < tiles.length">
+                <img on-tap="onTap($index + 1)" ng-src="data:image/jpeg;base64,{{tiles[$index + 1].imageData}}" width="100%" />
             </div>
-            <div class="col col-33" ng-if="$index + 2 < tile.length">
-                <img on-tap="onTap(r$index,custom.data.tab)" ng-src="data:image/jpeg;base64,{{images[$index + 2].image}}" width="100%" />
+            <div class="col col-33" ng-if="$index + 2 < tiles.length">
+                <img on-tap="onTap($index + 2)" ng-src="data:image/jpeg;base64,{{tiles[$index + 2].imageData}}" width="100%" />
             </div>
         </div>
+   </ion-content>
 </ion-view>

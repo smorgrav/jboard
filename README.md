@@ -9,3 +9,7 @@ List it! Share it! For fun, for education for exploration.
 
 ### Dependencies
 * cordova plugin add cordova-plugin-camera
+
+### Tools and Resources
+* http://www.picmonkey.com/
+* https://blog.nraboy.com/2014/11/playing-audio-android-ios-ionicframework-app/

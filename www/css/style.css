@@ -1,1 +1,18 @@
 /* Empty. Add your own CSS if you like */
+.login-container {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    height: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#74DDF2), color-stop(100%,#32A8BF));
+    background: -webkit-linear-gradient(top, #74DDF2 0%,#32A8BF 100%);
+}
+
+.login-container > .button-row img {
+    max-width: 80%;
+}
+
+.login-container > .header {
+  padding-top: 50px;
+  -webkit-flex: 3 0 0;
+  flex: 3 0 0;
+}

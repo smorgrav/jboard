@@ -130,5 +130,12 @@ angular.module('jboard', ['johans.services', 'johans.controllers', 'ionic', 'ngC
         cache: false
   })
     
-  $urlRouterProvider.otherwise('/login');
+  .state("logi2n", {
+        url: "/login2",
+        templateUrl: "templates/login2.html",
+        controller: "LoginController",
+        cache: false
+  })	
+	
+  $urlRouterProvider.otherwise('/login2');
 });
